@@ -33,10 +33,19 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="include/Codigos_retornos.h" />
+		<Unit filename="include/Costos.h" />
+		<Unit filename="include/Envio.h" />
 		<Unit filename="include/RebalseAC.h" />
 		<Unit filename="include/RebalseAL.h" />
 		<Unit filename="include/RevalseS.h" />
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/Costos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/Envio.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/RebalseAC.c">

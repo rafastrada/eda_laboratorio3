@@ -1,5 +1,6 @@
-#include "RebalseAL.h"
 #include "stdlib.h"
+#include "RebalseAL.h"
+#include "Hashing.h"
 #include "Codigos_retornos.h"
 
 //VIRGEN - OCUPADO (dato) - LIBRE
@@ -12,16 +13,6 @@ void RAL_init(RebalseAL *ral)
     ral->limite_superior = -1;
 }
 
-int hashing(char* x, int M)
-{
-    int longitud, i;
-    int contador = 0;
-    longitud = strlen(x);
-    contador = 0;
-    for(i = 0; i < longitud; i++)
-        contador += ((int)x[i]) * (i+1));
-    return (contador % M );
-}
 
 // Localizar
 int RAL_localizar(RebalseAL *ral, char codigo[], int *posicion, int *baldes_consultados)

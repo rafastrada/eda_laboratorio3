@@ -21,10 +21,6 @@ typedef struct {
     int limite_superior;
 } RebalseAL;
 
-// --- Hashing
-
-int hashing(char *, int);
-
 // --- INICIALIZAR
 void RAL_init(RebalseAL *);
 

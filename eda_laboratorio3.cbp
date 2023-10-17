@@ -36,9 +36,10 @@
 		<Unit filename="include/Codigos_retornos.h" />
 		<Unit filename="include/Costos.h" />
 		<Unit filename="include/Envio.h" />
+		<Unit filename="include/Hashing.h" />
 		<Unit filename="include/RebalseAC.h" />
 		<Unit filename="include/RebalseAL.h" />
-		<Unit filename="include/RevalseS.h" />
+		<Unit filename="include/RebalseS.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -48,13 +49,16 @@
 		<Unit filename="src/Envio.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/Hashing.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/RebalseAC.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/RebalseAL.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/RevalseS.c">
+		<Unit filename="src/RebalseS.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions />

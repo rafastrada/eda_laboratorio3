@@ -69,8 +69,8 @@ realizadas sobre las estructuras.
                                  (E).fecha_envio,(E).fecha_recepcion);
 
 
-int Lectura_Operaciones(RebalseAL *ral,
-                        Costos_estructura *ral_costos
+int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac,
+                        Costos_estructura *ral_costos, Costos_estructura *rac_costos
                         ) {
     FILE *fichero;
     int operacion, auxiliar;
@@ -109,11 +109,14 @@ int Lectura_Operaciones(RebalseAL *ral,
 
                 if(operacion == CODOP_ALTA) {
                     RAL_alta(ral,&nuevo_envio,ral_costos);
+                    RAC_alta(rac,&nuevo_envio,rac_costos);
                 } else {
                     RAL_baja(ral, &nuevo_envio, ral_costos);
+                    RAC_baja(rac, &nuevo_envio, rac_costos);
                 }
             } else if (operacion == CODOP_EVOCAR) {
                 RAL_evocar(ral,nuevo_envio.codigo_envio,&nuevo_envio,ral_costos);
+                RAC_evocar(rac,nuevo_envio.codigo_envio,&nuevo_envio,rac_costos);
 
             }
 
@@ -129,10 +132,11 @@ int main()
 {
     // Declaracion e inicializacion de las estructuras
     RebalseAL envios_ral; RAL_init(&envios_ral);
+    RebalseAC envios_rac; RAC_init(&envios_rac);
 
     // Costos de cada estructura
-    Costos_estructura envios_ral_costos;
-    Costos_estructura_init(&envios_ral_costos);
+    Costos_estructura envios_ral_costos, envios_rac_costos;
+    Costos_estructura_init(&envios_ral_costos), Costos_estructura_init(&envios_rac_costos);
 
     int hubo_memorizacion = 0;
 
@@ -159,11 +163,12 @@ int main()
             // Comparar estructuras
             case '1': {
                 if (!hubo_memorizacion) {
-                    Lectura_Operaciones(&envios_ral,
-                                        &envios_ral_costos);
+                    Lectura_Operaciones(&envios_ral, &envios_rac,
+                                        &envios_ral_costos, &envios_rac_costos);
 
                     // Calculo de costos medios
                     Costos_estructura_calculoMedias(&envios_ral_costos);
+                    Costos_estructura_calculoMedias(&envios_rac_costos);
 
                     hubo_memorizacion = 1;
                 }
@@ -173,16 +178,18 @@ int main()
                        "Comparacion de esfuerzos de estructuras\n"
                        PANTALLA_BARRA
                        "\n'N' es el tamaño del vector de costo correspondiente.\n\n"
-                       "\t\t| N = %u\t| N = %u\t\t|\n"
+                       "\t\t| N = %u\t| N = %u\t|\n"
                        "\n\t\t|\t Esfuerzo Maximo\t|\n"
                        "\t\t|\t Evocacion\t\t|\n"
                        "\t\t| Exitosa\t| Fracaso\t|\n"
                        "RAL:\t\t\t%.2f\t\t%.2f\t\t\n"
+                       "RAC:\t\t\t%.2f\t\t%.2f\t\t\n"
 
                        "\n\t\t|\t Esfuerzo Medio\t\t|\n"
                        "\t\t|\t Evocacion\t\t|\n"
                        "\t\t| Exitosa\t| Fracaso\t|\n"
                        "RAL:\t\t\t%.2f\t\t%.2f\t\t\n"
+                       "RAC:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "\n\n",
                        envios_ral_costos.Evocacion_exitosa.cantidad,
                        envios_ral_costos.Evocacion_fallida.cantidad,
@@ -190,8 +197,14 @@ int main()
                        envios_ral_costos.Evocacion_exitosa.maximo,
                        envios_ral_costos.Evocacion_fallida.maximo,
 
+                       envios_rac_costos.Evocacion_exitosa.maximo,
+                       envios_rac_costos.Evocacion_fallida.maximo,
+
                        envios_ral_costos.Evocacion_exitosa.media,
-                       envios_ral_costos.Evocacion_fallida.media
+                       envios_ral_costos.Evocacion_fallida.media,
+
+                       envios_rac_costos.Evocacion_exitosa.media,
+                       envios_rac_costos.Evocacion_fallida.media
 
                        );
                 system("pause");
@@ -211,9 +224,9 @@ int main()
                                "Mostrar estructuras\n"
                                PANTALLA_BARRA
                                "\nSeleccione la estructura que desea ver:\n"
-                               "1. LSO\n"
-                               "2. LSOBB\n"
-                               "3. ABB\n"
+                               "1. RAL\n"
+                               "2. RAC\n"
+                               "3. RS\n"
                                "4. Volver al menu principal\n\n"
                                "> ");
 
@@ -222,26 +235,23 @@ int main()
                         fflush(stdin); seleccion_usuario_estructura = getchar();
 
                         system("cls");
-//                        switch (seleccion_usuario_estructura) {
-//                            case '1': {
-//                                int cantidad = LSO_mostrarLista(&envios_lso);
-//                                printf("\n\nSe han impreso %d Envios.\n", cantidad);
-//                                system("pause");
-//                                break;
-//                            };
-//                            case '2': {
-//                                int cantidad = LSOBB_mostrarLista(&envios_lsobb);
-//                                printf("\n\nSe han impreso %d Envios.\n", cantidad);
-//                                system("pause");
-//                                break;
-//                            };
-//                            case '3': {
-//                                int cantidad = ABB_mostrarArbol_preorden(&envios_abb);
-//                                printf("\n\nSe han impreso %d Nodos.\n", cantidad);
-//                                system("pause");
-//                                break;
-//                            }
-//                        }
+                        switch (seleccion_usuario_estructura) {
+                            case '1': {
+                                RAL_mostrarLista(&envios_ral);
+                                printf("\n\nSe han impreso %d Envios.\n", envios_ral.cantidad);
+                                system("pause");
+                                break;
+                            };
+                            case '2': {
+                                RAC_mostrarLista(&envios_rac);
+                                printf("\n\nSe han impreso %d Envios.\n", envios_rac.cantidad);
+                                system("pause");
+                                break;
+                            };
+                            case '3': {
+                                break;
+                            }
+                        }
 
                     } while (seleccion_usuario_estructura == '4'); break; // termina el switch
                 } else {

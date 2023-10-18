@@ -128,3 +128,19 @@ int RAL_evocar(RebalseAL *ral, char codigo_envio[], Envio *envio, Costos_estruct
     }
 }
 
+void RAL_mostrarLista(RebalseAL *ral) {
+    for (int i = 0; i < RAL_M; i++){
+        printf("\nPOSICION %d\n",i);
+        if(strcmpi(ral->arreglo[i].codigo_envio, "VIRGEN") == 0){
+            printf("CELDA VIRGEN\n\n");
+        }else{
+            if (strcmpi(ral->arreglo[i].codigo_envio, "LIBRE") == 0){
+                printf("CELDA LIBRE\n");
+            }else{
+                Envio_imprimir(ral->arreglo[i]);
+                }
+            }
+        // muestra de a 5 elementos en la lista
+        if (((i+1) % 25) == 0) system("pause");
+    }
+}

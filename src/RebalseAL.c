@@ -40,7 +40,7 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
     if (primer_libre > -1) *posicion = primer_libre;
     else *posicion = ubicacion;
 
-    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, "VIRGEN") != 0) return LOCALIZACION_EXITOSA;
+    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
     else return LOCALIZACION_ERROR_NO_EXISTE;
 }
 

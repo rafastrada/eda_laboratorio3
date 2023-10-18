@@ -21,7 +21,8 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
 {
     int ubicacion = hashing(codigo_envio, RAL_M), contador = 0, primer_libre = -1;
 
-    while (strcmpi(ral->arreglo[ubicacion], "VIRGEN") != 0 &&
+    while (contador < RAL_M &&
+           strcmpi(ral->arreglo[ubicacion], "VIRGEN") != 0 &&
            strcmpi(ral->arreglo[ubicacion], codigo_envio) != 0) {
                 // se guarda la posicion de la primera celda libre encontrada
                 if (strcmpi(ral->arreglo[ubicacion], "LIBRE") == 0
@@ -31,29 +32,24 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
                contador++;
            }
 
-    *baldes_consultados = contador;
+    // se suma la ultima celda consultada
+    *baldes_consultados = contador + 1;
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
     if (primer_libre > -1) *posicion = primer_libre;
     else *posicion = ubicacion;
 
-    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, "VIRGEN") != 0) {
-        // se suma la ultima celda consultada
-        // (en este caso, distinta de VIRGEN)
-        (*baldes_consultados)++;
-
-        return LOCALIZACION_EXITOSA;
-    } else {
-        return LOCALIZACION_ERROR_NO_EXISTE;
-    }
+    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, "VIRGEN") != 0) return LOCALIZACION_EXITOSA;
+    else return LOCALIZACION_ERROR_NO_EXISTE;
 }
 
 int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
     int posicion, celdas_consultadas;
 
     // si la estructura NO esta llena
-    if (ral->cantidad < RAL_M) {
+    // (se deja una celda para al menos una marca de fin 'VIRGEN')
+    if (ral->cantidad < RAL_M - 1) {
         if (RAL_localizar(ral, envio->codigo_envio, &posicion, &celdas_consultadas)
             == LOCALIZACION_ERROR_NO_EXISTE) {
 
@@ -96,6 +92,9 @@ int RAL_baja(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
                     // se reduce la cantidad
                     (ral->cantidad)--;
 
+                    // se guarda el costo de la operacion
+                    (costos->Baja.cantidad)++;
+
                     return BAJA_EXITOSA;
                 }
                 else return BAJA_CANCELADA;
@@ -103,6 +102,30 @@ int RAL_baja(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
     }
 
     return return BAJA_ERROR_NO_EXISTE;
+}
+
+int RAL_evocar(RebalseAL *ral, char codigo_envio[], Envio *envio, Costos_estructura *costos) {
+    int posicion, celdas_consultadas;
+
+    if (RAL_localizar(ral, codigo_envio, &posicion, &celdas_consultadas) == LOCALIZACION_EXITOSA) {
+        // se copia los datos de envio
+        *envio = ral->arreglo[posicion];
+
+        // se guardan los costos
+        (costos->Evocacion_exitosa.cantidad)++;
+        costos->Evocacion_exitosa.sumatoria_vector += celdas_consultadas;
+        if (costos->Evocacion_exitosa.maximo < celdas_consultadas) costos->Evocacion_exitosa.maximo = celdas_consultadas;
+
+        return EVOCAR_EXITOSO;
+    }
+    else {
+        // se guarda el costo de evocacion fallida
+        (costos->Evocacion_fallida.cantidad)++;
+        costos->Evocacion_fallida.sumatoria_vector += celdas_consultadas;
+        if (costos->Evocacion_fallida.maximo < celdas_consultadas) costos->Evocacion_fallida.maximo = celdas_consultadas;
+
+        return EVOCAR_NO_EXISTE;
+    }
 }
 
 #endif // LISTASO_H

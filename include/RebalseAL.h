@@ -31,7 +31,7 @@ int RAL_alta(RebalseAL *,Envio *, Costos_estructura *);
 int RAL_baja(RebalseAL *,Envio *, Costos_estructura *);
 
 // --- EVOCAR
-int RAL_evocar(RebalseAL *, char [], Costos_estructura *);
+int RAL_evocar(RebalseAL *, char [], Envio *, Costos_estructura *);
 
 int RAL_mostrarLista(RebalseAL *);
 

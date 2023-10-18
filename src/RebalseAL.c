@@ -41,4 +41,31 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
     }
 }
 
+int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
+    int posicion, celdas_consultadas;
+
+    // @todo : control por lista llena
+    if (1) {
+        if (RAL_localizar(ral, envio->codigo_envio, &posicion, &celdas_consultadas)
+            == LOCALIZACION_ERROR_NO_EXISTE) {
+
+                // se guarda el envio en la estructura
+                ral->arreglo[posicion] = *envio;
+
+                // se guarda el costo de la alta
+                // NOTA: aunque el laboratorio no pide los costos de Alta y de Baja, ya que estos
+                // son siempre constantes, estos se guardan para mantener la uniformidad de funcionamiento
+                // con los trabajos anteriores
+                (costos->Alta.cantidad)++;
+                // SUMATORIA_VECTOR += 0, suponiendo que se observara las celdas desplazadas, pero
+                // dicha variable sigue igual al sumarle cero, por lo que sigue igual
+
+                // el MAXIMO tampoco modifica, ya que se inicia en cero, y el costo de este rebalse nunca puede superar
+                // ese valor
+            }
+        else return ALTA_ERROR_CODIGO_EXISTENTE;
+    }
+    else return ALTA_ERROR_LISTA_LLENA;
+}
+
 #endif // LISTASO_H

@@ -5,7 +5,7 @@
 #include "Costos.h"
 
 // Constantes
-#define RAL_TAM_ARREGLO 359
+#define RAL_M 359
 
 //N = 300
 //p = 0.84
@@ -14,11 +14,7 @@
 
 // Definicion de rebalse
 typedef struct {
-    Envio arreglo[RAL_TAM_ARREGLO];
-
-    // Indice del ultimo elemento en la lista
-    // (Si la lista esta vacia, entonces vale -1)
-    int limite_superior;
+    Envio arreglo[RAL_M];
 } RebalseAL;
 
 // --- INICIALIZAR

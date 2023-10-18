@@ -1,4 +1,5 @@
-#include "stdlib.h"
+#include <stdlib.h>
+#include <string.h>
 #include "RebalseAL.h"
 #include "Hashing.h"
 #include "Codigos_retornos.h"
@@ -7,38 +8,37 @@
 
 void RAL_init(RebalseAL *ral)
 {
-    int i;
-    for(i = 0; i < TAM_RAL; i++)
+    for(int i = 0; i < RAL_M; i++)
         strcpy(ral->arreglo[i]->codigo_envio, "VIRGEN");
-    ral->limite_superior = -1;
 }
 
 
 // Localizar
-int RAL_localizar(RebalseAL *ral, char codigo[], int *posicion, int *baldes_consultados)
+int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *baldes_consultados)
 {
-//    int primera_posicion_libre = -1;
-//    *posicion = hashing(codigo, TAM_RAL);
-//    *baldes_consultados = 0;
-//    while(*baldes_consultados < TAM_RAL && strcmp(ral.arr[*posicion].codigo, "VIRGEN") != 0 && strcmp(ral.arr[*posicion].codigo, codigo) != 0)
-//    {
-//        if(primera_posicion_libre == -1 && strcmp(ral.arr[*posicion].codigo, "LIBRE") == 0)
-//            primera_posicion_libre = *posicion;
-//        (*baldes_consultados)++;
-//        *posicion = (*posicion + AVANCE_RAL) % TAM_RAL;
-//    }
-//    if(*baldes_consultados >= TAM_RAL)
-//    {
-//        if(primera_posicion_libre != -1)
-//            *posicion = primera_posicion_libre;
-//        return FRACASO_POR_FALTA_ESPACIO;
-//    }
-//    (*baldes_consultados)++;
-//    if(strcmp(ral.arr[*posicion].codigo, codigo) == 0)
-//        return EXITO;
-//    if(primera_posicion_libre != -1)
-//        *posicion = primera_posicion_libre;
-//    return FRACASO;
+    int ubicacion = hashing(codigo_envio), contador = 0;
+
+    while (strcmpi(ral->arreglo[ubicacion], "VIRGEN") != 0 &&
+           strcmpi(ral->arreglo[ubicacion], codigo_envio) != 0) {
+               ubicacion = (ubicacion + 1) % RAL_M;
+               contador++;
+           }
+
+    *baldes_consultados = contador;
+
+    // se devuelve la posicion por parametro
+    // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
+    *posicion = ubicacion;
+
+    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, "VIRGEN") != 0) {
+        // se suma la ultima celda consultada
+        // (en este caso, distinta de VIRGEN)
+        (*baldes_consultados)++;
+
+        return LOCALIZACION_EXITOSA;
+    } else {
+        return LOCALIZACION_ERROR_NO_EXISTE;
+    }
 }
 
 #endif // LISTASO_H

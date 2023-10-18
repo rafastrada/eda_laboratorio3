@@ -9,7 +9,7 @@
 void RAL_init(RebalseAL *ral)
 {
     for(int i = 0; i < RAL_M; i++)
-        strcpy(ral->arreglo[i]->codigo_envio, "VIRGEN");
+        strcpy(ral->arreglo[i].codigo_envio, "VIRGEN");
 
     // 'cantidad' contiene la cantidad de elementos de la estructura
     ral->cantidad = 0;
@@ -22,10 +22,10 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
     int ubicacion = hashing(codigo_envio, RAL_M), contador = 0, primer_libre = -1;
 
     while (contador < RAL_M &&
-           strcmpi(ral->arreglo[ubicacion], "VIRGEN") != 0 &&
-           strcmpi(ral->arreglo[ubicacion], codigo_envio) != 0) {
+           strcmpi(ral->arreglo[ubicacion].codigo_envio, "VIRGEN") != 0 &&
+           strcmpi(ral->arreglo[ubicacion].codigo_envio, codigo_envio) != 0) {
                 // se guarda la posicion de la primera celda libre encontrada
-                if (strcmpi(ral->arreglo[ubicacion], "LIBRE") == 0
+                if (strcmpi(ral->arreglo[ubicacion].codigo_envio, "LIBRE") == 0
                    && primer_libre == -1) primer_libre = ubicacion;
                // se calcula el siguiente
                ubicacion = (ubicacion + 1) % RAL_M;
@@ -40,7 +40,7 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
     if (primer_libre > -1) *posicion = primer_libre;
     else *posicion = ubicacion;
 
-    if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
+    if (strcmpi(ral->arreglo[ubicacion].codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
     else return LOCALIZACION_ERROR_NO_EXISTE;
 }
 
@@ -82,10 +82,10 @@ int RAL_baja(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
             == LOCALIZACION_EXITOSA) {
 
                 // confirmacion de baja por comparacion de campo por campo
-                if (Envio_sonIguales(ral->arreglo[posicion], envio)) {
+                if (Envio_sonIguales(&(ral->arreglo[posicion]), envio)) {
 
                     // se vuelve los valores de ENVIO a default
-                    Envio_init(ral->arreglo[posicion]);
+                    Envio_init(&(ral->arreglo[posicion]));
                     // luego se marca como libre
                     strcpy(ral->arreglo[posicion].codigo_envio,"LIBRE");
 
@@ -101,7 +101,7 @@ int RAL_baja(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
             }
     }
 
-    return return BAJA_ERROR_NO_EXISTE;
+    return BAJA_ERROR_NO_EXISTE;
 }
 
 int RAL_evocar(RebalseAL *ral, char codigo_envio[], Envio *envio, Costos_estructura *costos) {
@@ -128,4 +128,3 @@ int RAL_evocar(RebalseAL *ral, char codigo_envio[], Envio *envio, Costos_estruct
     }
 }
 
-#endif // LISTASO_H

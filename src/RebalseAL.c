@@ -10,16 +10,23 @@ void RAL_init(RebalseAL *ral)
 {
     for(int i = 0; i < RAL_M; i++)
         strcpy(ral->arreglo[i]->codigo_envio, "VIRGEN");
+
+    // 'cantidad' contiene la cantidad de elementos de la estructura
+    ral->cantidad = 0;
 }
 
 
 // Localizar
 int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *baldes_consultados)
 {
-    int ubicacion = hashing(codigo_envio), contador = 0;
+    int ubicacion = hashing(codigo_envio, RAL_M), contador = 0, primer_libre = -1;
 
     while (strcmpi(ral->arreglo[ubicacion], "VIRGEN") != 0 &&
            strcmpi(ral->arreglo[ubicacion], codigo_envio) != 0) {
+                // se guarda la posicion de la primera celda libre encontrada
+                if (strcmpi(ral->arreglo[ubicacion], "LIBRE") == 0
+                   && primer_libre == -1) primer_libre = ubicacion;
+               // se calcula el siguiente
                ubicacion = (ubicacion + 1) % RAL_M;
                contador++;
            }
@@ -28,7 +35,8 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
-    *posicion = ubicacion;
+    if (primer_libre > -1) *posicion = primer_libre;
+    else *posicion = ubicacion;
 
     if (strcmpi(ral->arreglo[ubicacion]->codigo_envio, "VIRGEN") != 0) {
         // se suma la ultima celda consultada
@@ -44,13 +52,14 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
 int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
     int posicion, celdas_consultadas;
 
-    // @todo : control por lista llena
-    if (1) {
+    // si la estructura NO esta llena
+    if (ral->cantidad < RAL_M) {
         if (RAL_localizar(ral, envio->codigo_envio, &posicion, &celdas_consultadas)
             == LOCALIZACION_ERROR_NO_EXISTE) {
 
                 // se guarda el envio en la estructura
                 ral->arreglo[posicion] = *envio;
+                (ral->cantidad)++;  // aumenta la cantidad de elementos en la RAL
 
                 // se guarda el costo de la alta
                 // NOTA: aunque el laboratorio no pide los costos de Alta y de Baja, ya que estos
@@ -66,6 +75,34 @@ int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
         else return ALTA_ERROR_CODIGO_EXISTENTE;
     }
     else return ALTA_ERROR_LISTA_LLENA;
+}
+
+int RAL_baja(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
+    int posicion, celdas_consultadas;
+
+    // si la estructura NO esta vacia
+    if (ral->cantidad > 0) {
+        if (RAL_localizar(ral, envio->codigo_envio, &posicion, &celdas_consultadas)
+            == LOCALIZACION_EXITOSA) {
+
+                // confirmacion de baja por comparacion de campo por campo
+                if (Envio_sonIguales(ral->arreglo[posicion], envio)) {
+
+                    // se vuelve los valores de ENVIO a default
+                    Envio_init(ral->arreglo[posicion]);
+                    // luego se marca como libre
+                    strcpy(ral->arreglo[posicion].codigo_envio,"LIBRE");
+
+                    // se reduce la cantidad
+                    (ral->cantidad)--;
+
+                    return BAJA_EXITOSA;
+                }
+                else return BAJA_CANCELADA;
+            }
+    }
+
+    return return BAJA_ERROR_NO_EXISTE;
 }
 
 #endif // LISTASO_H

@@ -15,6 +15,7 @@
 // Definicion de rebalse
 typedef struct {
     Envio arreglo[RAL_M];
+    int cantidad;
 } RebalseAL;
 
 // --- INICIALIZAR

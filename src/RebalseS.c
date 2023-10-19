@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "RebalseS.h"
+#include "Codigos_retornos.h"
 
 void RS_init(RebalseS *rs) {
     // inicia los baldes apuntando a NULL
@@ -7,8 +8,7 @@ void RS_init(RebalseS *rs) {
 }
 
 int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo ***elemento_padre, int *celdas_consultadas) {
-    int contador = 0;
-    *posicion = hashing(codigo_envio, RS_M);
+    int contador = 0, *posicion = hashing(codigo_envio, RS_M);
     RS_Nodo *cursor = rs->punteros[*posicion], **cursor_padre = &cursor;
 
     while (cursor != NULL) {

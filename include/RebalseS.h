@@ -38,7 +38,7 @@ int RS_baja(RebalseS *,Envio *, Costos_estructura *);
 // --- EVOCAR
 int RS_evocar(RebalseS *, char [], Envio *, Costos_estructura *);
 
-int RS_mostrarLista(RebalseS *);
+void RS_mostrarLista(RebalseS *);
 
 void RS_liberarMemoria(RebalseS *);
 

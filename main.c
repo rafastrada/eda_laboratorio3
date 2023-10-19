@@ -69,8 +69,8 @@ realizadas sobre las estructuras.
                                  (E).fecha_envio,(E).fecha_recepcion);
 
 
-int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac,
-                        Costos_estructura *ral_costos, Costos_estructura *rac_costos
+int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac, RebalseS *rs,
+                        Costos_estructura *ral_costos, Costos_estructura *rac_costos, Costos_estructura *rs_costos
                         ) {
     FILE *fichero;
     int operacion, auxiliar;
@@ -110,13 +110,16 @@ int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac,
                 if(operacion == CODOP_ALTA) {
                     RAL_alta(ral,&nuevo_envio,ral_costos);
                     RAC_alta(rac,&nuevo_envio,rac_costos);
+                    RS_alta(rs,&nuevo_envio,rs_costos);
                 } else {
                     RAL_baja(ral, &nuevo_envio, ral_costos);
                     RAC_baja(rac, &nuevo_envio, rac_costos);
+                    RS_baja(rs, &nuevo_envio, rs_costos);
                 }
             } else if (operacion == CODOP_EVOCAR) {
                 RAL_evocar(ral,nuevo_envio.codigo_envio,&nuevo_envio,ral_costos);
                 RAC_evocar(rac,nuevo_envio.codigo_envio,&nuevo_envio,rac_costos);
+                RS_evocar(rs,nuevo_envio.codigo_envio,&nuevo_envio,rs_costos);
 
             }
 
@@ -133,12 +136,13 @@ int main()
     // Declaracion e inicializacion de las estructuras
     RebalseAL envios_ral; RAL_init(&envios_ral);
     RebalseAC envios_rac; RAC_init(&envios_rac);
+    RebalseS envios_rs; RS_init(&envios_rs);
 
     // Costos de cada estructura
-    Costos_estructura envios_ral_costos, envios_rac_costos;
-    Costos_estructura_init(&envios_ral_costos), Costos_estructura_init(&envios_rac_costos);
+    Costos_estructura envios_ral_costos, envios_rac_costos, envios_rs_costos;
+    Costos_estructura_init(&envios_ral_costos), Costos_estructura_init(&envios_rac_costos), Costos_estructura_init(&envios_rs_costos);
 
-    int hubo_memorizacion = 0;
+    int hubo_memorizacion = 0, cantidad_envios = 0;
 
     // INICIO DEL PROGRAMA
     char seleccion_usuario_menu_principal = ' '; // variable para guardar la opcion elegida por usuario
@@ -163,12 +167,13 @@ int main()
             // Comparar estructuras
             case '1': {
                 if (!hubo_memorizacion) {
-                    Lectura_Operaciones(&envios_ral, &envios_rac,
-                                        &envios_ral_costos, &envios_rac_costos);
+                    Lectura_Operaciones(&envios_ral, &envios_rac, &envios_rs,
+                                        &envios_ral_costos, &envios_rac_costos, &envios_rs_costos);
 
                     // Calculo de costos medios
                     Costos_estructura_calculoMedias(&envios_ral_costos);
                     Costos_estructura_calculoMedias(&envios_rac_costos);
+                    Costos_estructura_calculoMedias(&envios_rs_costos);
 
                     hubo_memorizacion = 1;
                 }
@@ -184,12 +189,14 @@ int main()
                        "\t\t| Exitosa\t| Fracaso\t|\n"
                        "RAL:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "RAC:\t\t\t%.2f\t\t%.2f\t\t\n"
+                       "RS:\t\t\t%.2f\t\t%.2f\t\t\n"
 
                        "\n\t\t|\t Esfuerzo Medio\t\t|\n"
                        "\t\t|\t Evocacion\t\t|\n"
                        "\t\t| Exitosa\t| Fracaso\t|\n"
                        "RAL:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "RAC:\t\t\t%.2f\t\t%.2f\t\t\n"
+                       "RS:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "\n\n",
                        envios_ral_costos.Evocacion_exitosa.cantidad,
                        envios_ral_costos.Evocacion_fallida.cantidad,
@@ -200,11 +207,17 @@ int main()
                        envios_rac_costos.Evocacion_exitosa.maximo,
                        envios_rac_costos.Evocacion_fallida.maximo,
 
+                       envios_rs_costos.Evocacion_exitosa.maximo,
+                       envios_rs_costos.Evocacion_fallida.maximo,
+
                        envios_ral_costos.Evocacion_exitosa.media,
                        envios_ral_costos.Evocacion_fallida.media,
 
                        envios_rac_costos.Evocacion_exitosa.media,
-                       envios_rac_costos.Evocacion_fallida.media
+                       envios_rac_costos.Evocacion_fallida.media,
+
+                       envios_rs_costos.Evocacion_exitosa.media,
+                       envios_rs_costos.Evocacion_fallida.media
 
                        );
                 system("pause");
@@ -249,6 +262,9 @@ int main()
                                 break;
                             };
                             case '3': {
+                                cantidad_envios = RS_mostrarLista(&envios_rs);
+                                printf("\n\nSe han impreso %d Envios.\n", cantidad_envios);
+                                system("pause");
                                 break;
                             }
                         }

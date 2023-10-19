@@ -97,6 +97,27 @@ int RS_evocar(RebalseS *rs, char codigo_envio[], Envio *envio, Costos_estructura
     }
 }
 
+void RS_mostrarLista(RebalseS *rs) {
+    RS_Nodo *cursor;
+
+    for (int i=0; i<RS_M; i++) {
+        cursor = rs->punteros[i];
+
+        printf("\nPosicion N°%d\n\t|\n\v\n", i+1);
+
+        // si el balde esta vacio
+        if (cursor == NULL) printf("\tVacio\n\n");
+        else {
+            while (cursor != NULL) {
+                Envio_imprimir(cursor->envio);
+                printf("\t|\n\tv\n");
+            }
+            printf("\tFinal\n");
+        }
+
+        system("pause");
+    }
+}
 
 void RS_liberarMemoria(RebalseS *rs) {
     RS_Nodo *cursor, *cursor_auxiliar;

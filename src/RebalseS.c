@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "RebalseS.h"
+#include "Codigos_retornos.h"
 
 void RS_init(RebalseS *rs) {
     // inicia los baldes apuntando a NULL
@@ -7,8 +8,7 @@ void RS_init(RebalseS *rs) {
 }
 
 int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo ***elemento_padre, int *celdas_consultadas) {
-    int contador = 0;
-    *posicion = hashing(codigo_envio, RS_M);
+    int contador = 0, *posicion = hashing(codigo_envio, RS_M);
     RS_Nodo *cursor = rs->punteros[*posicion], **cursor_padre = &cursor;
 
     while (cursor != NULL) {
@@ -97,8 +97,10 @@ int RS_evocar(RebalseS *rs, char codigo_envio[], Envio *envio, Costos_estructura
     }
 }
 
-void RS_mostrarLista(RebalseS *rs) {
+int RS_mostrarLista(RebalseS *rs) {
+    // la funcion devuelve la cantidad de elementos de la estructura
     RS_Nodo *cursor;
+    int contador = 0;
 
     for (int i=0; i<RS_M; i++) {
         cursor = rs->punteros[i];
@@ -111,12 +113,15 @@ void RS_mostrarLista(RebalseS *rs) {
             while (cursor != NULL) {
                 Envio_imprimir(cursor->envio);
                 printf("\t|\n\tv\n");
+                contador++;
             }
             printf("\tFinal\n");
         }
 
         system("pause");
     }
+
+    return contador;
 }
 
 void RS_liberarMemoria(RebalseS *rs) {

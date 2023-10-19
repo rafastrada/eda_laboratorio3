@@ -7,25 +7,23 @@ Integrantes:
 
 
 Resultados de la comparacion de las estructuras:
-                |        Esfuerzo Maximo                                        |
-                |        Localizacion           |               |               |
-                | Exitosa       | Fracaso       | Alta Ex       | Baja Ex       |
-LSO:                    60.00           42.00           58.00           47.00
-LSOBB:                  5.00            5.00            58.00           47.00
-ABB:                    12.00           11.00           1.50            1.50
-                |        Esfuerzo Medio                                         |
-                |        Localizacion           |               |               |
-                | Exitosa       | Fracaso       | Alta Ex       | Baja Ex       |
-LSO:                    23.97           16.75           15.07           16.77
-LSOBB:                  4.59            4.00            15.07           16.77
-ABB:                    5.71            6.27            1.50            0.98
+                |        Esfuerzo Maximo        |
+                |        Evocacion              |
+                | Exitosa       | Fracaso       |
+RAL:                    6.00            9.00
+RAC:                    7.00            11.00
+RS:                     4.00            3.00
+
+                |        Esfuerzo Medio         |
+                |        Evocacion              |
+                | Exitosa       | Fracaso       |
+RAL:                    1.76            3.41
+RAC:                    1.82            3.19
+RS:                     1.29            0.38
 
 En base a los resultados obtenidos de los esfuerzos de las estructuras, podemos observar
-que el Arbol Binario de Busqueda tiene costos casi constantes para las operaciones de
-Altas y Bajas. En cuanto a la localizacion, aunque la Lista secuencial ordenada con Busqueda Binaria
-tiene los maximos mas bajos, las medias del ABB y la LSOBB son muy proximas.
-Tambien se puede observar que el desempeño de la LSO es la menos optima para las operaciones
-realizadas sobre las estructuras.
+que el Rebalse Separado tiene los esfuerzos maximos y medios mas bajos con respecto a las demas
+estructuras, por lo que ante dicha situacion, la RS es la estructura mas optima.
 
 */
 
@@ -75,7 +73,9 @@ int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac, RebalseS *rs,
     FILE *fichero;
     int operacion, auxiliar;
 
-    Envio nuevo_envio; Envio_init(&nuevo_envio); //variable temporal
+    Envio nuevo_envio, envio_auxiliar;
+    Envio_init(&nuevo_envio); //variable temporal
+    Envio_init(&envio_auxiliar);
 
     fichero = fopen("Operaciones-Envios.txt","r"); //abrir el archivo
     if (fichero == NULL) return 0;
@@ -117,9 +117,9 @@ int Lectura_Operaciones(RebalseAL *ral, RebalseAC *rac, RebalseS *rs,
                     RS_baja(rs, &nuevo_envio, rs_costos);
                 }
             } else if (operacion == CODOP_EVOCAR) {
-                RAL_evocar(ral,nuevo_envio.codigo_envio,&nuevo_envio,ral_costos);
-                RAC_evocar(rac,nuevo_envio.codigo_envio,&nuevo_envio,rac_costos);
-                RS_evocar(rs,nuevo_envio.codigo_envio,&nuevo_envio,rs_costos);
+                RAL_evocar(ral,nuevo_envio.codigo_envio,&envio_auxiliar,ral_costos);
+                RAC_evocar(rac,nuevo_envio.codigo_envio,&envio_auxiliar,rac_costos);
+                RS_evocar(rs,nuevo_envio.codigo_envio,&envio_auxiliar,rs_costos);
 
             }
 
@@ -285,6 +285,9 @@ int main()
 
     } while (seleccion_usuario_menu_principal != '3');
 
+
+    // se libera memoria de Rebalse separado
+    RS_liberarMemoria(&envios_rs);
 
     return 0;
 }

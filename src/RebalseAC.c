@@ -142,6 +142,6 @@ void RAC_mostrarLista(RebalseAC *rac) {
                 }
             }
         // muestra de a 5 elementos en la lista
-        if (((i+1) % 25) == 0) system("pause");
+        if (((i+1) % 5) == 0) system("pause");
     }
 }

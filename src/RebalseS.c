@@ -8,8 +8,8 @@ void RS_init(RebalseS *rs) {
 }
 
 int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo ***elemento_padre, int *celdas_consultadas) {
-    int contador = 0, *posicion = hashing(codigo_envio, RS_M);
-    RS_Nodo *cursor = rs->punteros[*posicion], **cursor_padre = &cursor;
+    int contador = 0, posicion = hashing(codigo_envio, RS_M);
+    RS_Nodo *cursor = rs->punteros[posicion], **cursor_padre = &(rs->punteros[posicion]);
 
     while (cursor != NULL) {
         // mientras el elemento apuntado no sea el buscado
@@ -18,6 +18,7 @@ int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo 
             cursor = cursor->siguiente;
             contador++;
         }
+        else break;
     }
 
     *celdas_consultadas = contador;
@@ -72,7 +73,7 @@ int RS_baja(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
 }
 
 int RS_evocar(RebalseS *rs, char codigo_envio[], Envio *envio, Costos_estructura *costos) {
-    int celdas_consultadas;
+    int celdas_consultadas = 0;
     RS_Nodo *elemento, **elemento_padre;
 
     if (RS_localizar(rs, codigo_envio, &elemento, &elemento_padre, &celdas_consultadas)
@@ -105,7 +106,7 @@ int RS_mostrarLista(RebalseS *rs) {
     for (int i=0; i<RS_M; i++) {
         cursor = rs->punteros[i];
 
-        printf("\nPosicion N°%d\n\t|\n\v\n", i+1);
+        printf("\nPosicion N:%d\n\t|\n\tv\n", i);
 
         // si el balde esta vacio
         if (cursor == NULL) printf("\tVacio\n\n");
@@ -113,12 +114,13 @@ int RS_mostrarLista(RebalseS *rs) {
             while (cursor != NULL) {
                 Envio_imprimir(cursor->envio);
                 printf("\t|\n\tv\n");
+                cursor = cursor->siguiente;
                 contador++;
             }
             printf("\tFinal\n");
         }
 
-        system("pause");
+        if (i % 5 == 0 ) system("pause");
     }
 
     return contador;

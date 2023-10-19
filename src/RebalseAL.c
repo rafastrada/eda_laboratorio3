@@ -33,7 +33,9 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
            }
 
     // se suma la ultima celda consultada
-    *baldes_consultados = contador + 1;
+    if (contador < RAL_M) contador++;
+
+    *baldes_consultados = contador;
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
@@ -141,6 +143,6 @@ void RAL_mostrarLista(RebalseAL *ral) {
                 }
             }
         // muestra de a 5 elementos en la lista
-        if (((i+1) % 25) == 0) system("pause");
+        if (((i+1) % 5) == 0) system("pause");
     }
 }

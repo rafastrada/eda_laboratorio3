@@ -97,8 +97,10 @@ int RS_evocar(RebalseS *rs, char codigo_envio[], Envio *envio, Costos_estructura
     }
 }
 
-void RS_mostrarLista(RebalseS *rs) {
+int RS_mostrarLista(RebalseS *rs) {
+    // la funcion devuelve la cantidad de elementos de la estructura
     RS_Nodo *cursor;
+    int contador = 0;
 
     for (int i=0; i<RS_M; i++) {
         cursor = rs->punteros[i];
@@ -111,12 +113,15 @@ void RS_mostrarLista(RebalseS *rs) {
             while (cursor != NULL) {
                 Envio_imprimir(cursor->envio);
                 printf("\t|\n\tv\n");
+                contador++;
             }
             printf("\tFinal\n");
         }
 
         system("pause");
     }
+
+    return contador;
 }
 
 void RS_liberarMemoria(RebalseS *rs) {

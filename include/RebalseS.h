@@ -27,7 +27,7 @@ typedef struct {
 void RS_init(RebalseS *);
 
 // --- LOCALIZAR
-int RS_localizar(RebalseS *,char [], RS_Nodo **, RS_Nodo ***, int *);
+int RS_localizar(RebalseS *,char [], RS_Nodo **, RS_Nodo ***, int *, int *);
 
 // --- ALTA
 int RS_alta(RebalseS *,Envio *, Costos_estructura *);

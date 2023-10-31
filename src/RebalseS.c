@@ -7,8 +7,8 @@ void RS_init(RebalseS *rs) {
     for (int i = 0; i < RS_M; i++) rs->punteros[i] = NULL;
 }
 
-int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo ***elemento_padre, int *celdas_consultadas) {
-    int contador = 0, posicion = hashing(codigo_envio, RS_M);
+int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo ***elemento_padre,int *valor_hash, int *celdas_consultadas) {
+    int contador = 1, posicion = hashing(codigo_envio, RS_M);
     RS_Nodo *cursor = rs->punteros[posicion], **cursor_padre = &(rs->punteros[posicion]);
 
     while (cursor != NULL) {
@@ -25,6 +25,8 @@ int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo 
 
     *elemento = cursor; *elemento_padre = cursor_padre;
 
+    *valor_hash = posicion;     // se devuelve el valor del hash
+
     if (cursor != NULL) {
         // se suma la comparacion que detuvo el bucle
         (*celdas_consultadas)++;
@@ -34,19 +36,20 @@ int RS_localizar(RebalseS *rs, char codigo_envio[], RS_Nodo **elemento, RS_Nodo 
 }
 
 int RS_alta(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
-    int celdas_consultadas;
+    int celdas_consultadas, valor_hash;
     RS_Nodo *elemento, **elemento_padre;
 
-    if (RS_localizar(rs,envio->codigo_envio,&elemento, &elemento_padre, &celdas_consultadas)
+    if (RS_localizar(rs,envio->codigo_envio,&elemento, &elemento_padre, &valor_hash, &celdas_consultadas)
         == LOCALIZACION_ERROR_NO_EXISTE) {
             // se pide memoria para el nuevo elemento
             RS_Nodo *nuevo = (RS_Nodo*) malloc(sizeof(RS_Nodo));
 
             // si hay memoria disponible
             if (nuevo != NULL) {
+
+                nuevo->siguiente = rs->punteros[valor_hash];
+                rs->punteros[valor_hash] = nuevo;
                 nuevo->envio = *envio;                  // se copia el envio nuevo
-                nuevo->siguiente = elemento;  // se define el puntero al siguiente
-                *elemento_padre = nuevo;             // se actualiza el balde
 
                 // se guarda el costo
                 (costos->Alta.cantidad)++;
@@ -58,10 +61,10 @@ int RS_alta(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
 }
 
 int RS_baja(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
-    int celdas_consultadas;
+    int celdas_consultadas, valor_hash;
     RS_Nodo *elemento, **elemento_padre;
 
-    if (RS_localizar(rs, envio->codigo_envio, &elemento, &elemento_padre, &celdas_consultadas)
+    if (RS_localizar(rs, envio->codigo_envio, &elemento, &elemento_padre,&valor_hash, &celdas_consultadas)
         == LOCALIZACION_EXITOSA) {
             *elemento_padre = elemento->siguiente;
             free(elemento); // se libera la memoria
@@ -73,10 +76,10 @@ int RS_baja(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
 }
 
 int RS_evocar(RebalseS *rs, char codigo_envio[], Envio *envio, Costos_estructura *costos) {
-    int celdas_consultadas = 0;
+    int celdas_consultadas = 0, valor_hash;
     RS_Nodo *elemento, **elemento_padre;
 
-    if (RS_localizar(rs, codigo_envio, &elemento, &elemento_padre, &celdas_consultadas)
+    if (RS_localizar(rs, codigo_envio, &elemento, &elemento_padre, &valor_hash, &celdas_consultadas)
         == LOCALIZACION_EXITOSA) {
             // se devuelve la nupla por parametro
             *envio = elemento->envio;

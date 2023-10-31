@@ -182,8 +182,6 @@ int main()
                 printf(PANTALLA_BARRA
                        "Comparacion de esfuerzos de estructuras\n"
                        PANTALLA_BARRA
-                       "\n'N' es el tamaño del vector de costo correspondiente.\n\n"
-                       "\t\t| N = %u\t| N = %u\t|\n"
                        "\n\t\t|\t Esfuerzo Maximo\t|\n"
                        "\t\t|\t Evocacion\t\t|\n"
                        "\t\t| Exitosa\t| Fracaso\t|\n"
@@ -198,9 +196,6 @@ int main()
                        "RAC:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "RS:\t\t\t%.2f\t\t%.2f\t\t\n"
                        "\n\n",
-                       envios_ral_costos.Evocacion_exitosa.cantidad,
-                       envios_ral_costos.Evocacion_fallida.cantidad,
-
                        envios_ral_costos.Evocacion_exitosa.maximo,
                        envios_ral_costos.Evocacion_fallida.maximo,
 

@@ -17,7 +17,7 @@ void RAC_init(RebalseAC *rac)
 
 
 // Localizar
-int RAC_localizar(RebalseAC *rac, char codigo_envio[], int *posicion, int *baldes_consultados)
+int RAC_localizar(RebalseAC *rac, char codigo_envio[], int *posicion, int *celdas_consultadas)
 {
     int ubicacion = hashing(codigo_envio, RAC_M), contador = 0, primer_libre = -1, paso = 1;
 
@@ -34,7 +34,9 @@ int RAC_localizar(RebalseAC *rac, char codigo_envio[], int *posicion, int *balde
            }
 
     // se suma la ultima celda consultada
-    *baldes_consultados = contador + 1;
+    if (contador < RAC_M) contador++;
+
+    *celdas_consultadas = contador;
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
@@ -42,16 +44,19 @@ int RAC_localizar(RebalseAC *rac, char codigo_envio[], int *posicion, int *balde
     else *posicion = ubicacion;
 
     if (strcmpi(rac->arreglo[ubicacion].codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
-    else return LOCALIZACION_ERROR_NO_EXISTE;
+    else {
+        if (contador == RAC_M) return LOCALIZACION_ERROR_IMPOSIBLE_LOCALIZAR;
+        else return LOCALIZACION_ERROR_NO_EXISTE;
+    }
 }
 
 int RAC_alta(RebalseAC *rac, Envio *envio, Costos_estructura *costos) {
-    int posicion, celdas_consultadas;
+    int posicion, celdas_consultadas, localizar;
 
     // si la estructura NO esta llena
     // (se deja una celda para al menos una marca de fin 'VIRGEN')
-    if (rac->cantidad < RAC_M - 1) {
-        if (RAC_localizar(rac, envio->codigo_envio, &posicion, &celdas_consultadas)
+    if (rac->cantidad < RAC_M ) {
+        if (localizar = RAC_localizar(rac, envio->codigo_envio, &posicion, &celdas_consultadas)
             == LOCALIZACION_ERROR_NO_EXISTE) {
 
                 // se guarda el envio en la estructura
@@ -68,8 +73,13 @@ int RAC_alta(RebalseAC *rac, Envio *envio, Costos_estructura *costos) {
 
                 // el MAXIMO tampoco modifica, ya que se inicia en cero, y el costo de este rebalse nunca puede superar
                 // ese valor
+
+                return ALTA_EXITOSA;
             }
-        else return ALTA_ERROR_CODIGO_EXISTENTE;
+        else {
+            if (localizar == LOCALIZACION_EXITOSA) return ALTA_ERROR_CODIGO_EXISTENTE;
+            else return ALTA_ERROR_IMPOSIBLE_REALIZAR;
+        }
     }
     else return ALTA_ERROR_LISTA_LLENA;
 }

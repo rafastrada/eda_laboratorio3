@@ -69,6 +69,8 @@ int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
 
                 // el MAXIMO tampoco modifica, ya que se inicia en cero, y el costo de este rebalse nunca puede superar
                 // ese valor
+
+                return ALTA_EXITOSA;
             }
         else return ALTA_ERROR_CODIGO_EXISTENTE;
     }

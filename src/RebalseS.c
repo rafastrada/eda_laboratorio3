@@ -54,6 +54,7 @@ int RS_alta(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
                 // se guarda el costo
                 (costos->Alta.cantidad)++;
 
+                return ALTA_EXITOSA;
             }
             else return ALTA_ERROR_LISTA_LLENA;
         }

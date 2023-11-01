@@ -17,7 +17,7 @@ void RAL_init(RebalseAL *ral)
 
 
 // Localizar
-int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *baldes_consultados)
+int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *celdas_consultadas)
 {
     int ubicacion = hashing(codigo_envio, RAL_M), contador = 0, primer_libre = -1;
 
@@ -35,7 +35,7 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *balde
     // se suma la ultima celda consultada
     if (contador < RAL_M) contador++;
 
-    *baldes_consultados = contador;
+    *celdas_consultadas = contador;
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
@@ -51,7 +51,7 @@ int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
 
     // si la estructura NO esta llena
     // (se deja una celda para al menos una marca de fin 'VIRGEN')
-    if (ral->cantidad < RAL_M - 1) {
+    if (ral->cantidad < RAL_M ) {
         if (RAL_localizar(ral, envio->codigo_envio, &posicion, &celdas_consultadas)
             == LOCALIZACION_ERROR_NO_EXISTE) {
 

@@ -12,18 +12,19 @@ Resultados de la comparacion de las estructuras:
                 | Exitosa       | Fracaso       |
 RAL:                    6.00            9.00
 RAC:                    7.00            11.00
-RS:                     4.00            3.00
+RS:                     5.00            4.00
 
                 |        Esfuerzo Medio         |
                 |        Evocacion              |
                 | Exitosa       | Fracaso       |
 RAL:                    1.76            3.41
 RAC:                    1.82            3.19
-RS:                     1.29            0.38
+RS:                     2.29            1.38
 
 En base a los resultados obtenidos de los esfuerzos de las estructuras, podemos observar
 que el Rebalse Separado tiene los esfuerzos maximos y medios mas bajos con respecto a las demas
-estructuras, por lo que ante dicha situacion, la RS es la estructura mas optima.
+estructuras (salvo en el caso de la media de la evocacion exitosa, pero por poca diferencia),
+por lo que ante dicha situacion, la RS es la estructura mas optima.
 
 */
 

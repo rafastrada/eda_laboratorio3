@@ -75,3 +75,22 @@ int Envio_esCorrecto_codigo(char codigo_envio[]) {
 
     return 1;
 }
+
+void Envio_imprimir(Envio *envio) {
+    printf("Codigo de Envio:\t\t\t%s\n"
+           "DNI de Receptor:\t\t\t%u\n"
+           "Nombre y Apellido de Receptor:\t\t%s\n"
+           "Domicilio de Receptor:\t\t\t%s\n"
+           "DNI de Remitente:\t\t\t%u\n"
+           "Nombre y Apellido de Remitente:\t\t%s\n"
+           "Fecha de Envio:\t\t\t\t%s\n"
+           "Fecha de Recepcion:\t\t\t%s\n\n",
+           envio->codigo_envio,
+           envio->dni_receptor,
+           envio->nombre_apellido_receptor,
+           envio->domicilio_receptor,
+           envio->dni_remitente,
+           envio->nombre_apellido_remitente,
+           envio->fecha_envio,
+           envio->fecha_recepcion);
+}

@@ -39,11 +39,13 @@ int RAL_localizar(RebalseAL *ral, char codigo_envio[], int *posicion, int *celda
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
-    if (primer_libre > -1) *posicion = primer_libre;
-    else *posicion = ubicacion;
+    *posicion = ubicacion;
 
     if (strcmpi(ral->arreglo[ubicacion].codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
-    else return LOCALIZACION_ERROR_NO_EXISTE;
+    else {
+        if (primer_libre > -1) *posicion = primer_libre;
+        return LOCALIZACION_ERROR_NO_EXISTE;
+    }
 }
 
 int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
@@ -57,6 +59,7 @@ int RAL_alta(RebalseAL *ral, Envio *envio, Costos_estructura *costos) {
 
                 // se guarda el envio en la estructura
                 ral->arreglo[posicion] = *envio;
+
                 (ral->cantidad)++;  // aumenta la cantidad de elementos en la RAL
 
                 // se guarda el costo de la alta
@@ -141,7 +144,7 @@ void RAL_mostrarLista(RebalseAL *ral) {
             if (strcmpi(ral->arreglo[i].codigo_envio, "LIBRE") == 0){
                 printf("CELDA LIBRE\n");
             }else{
-                Envio_imprimir(ral->arreglo[i]);
+                Envio_imprimir(&(ral->arreglo[i]));
                 }
             }
         // muestra de a 5 elementos en la lista

@@ -17,8 +17,8 @@ RS:                     5.00            4.00
                 |        Esfuerzo Medio         |
                 |        Evocacion              |
                 | Exitosa       | Fracaso       |
-RAL:                    1.76            3.41
-RAC:                    1.82            3.19
+RAL:                    1.68            3.87
+RAC:                    1.72            3.56
 RS:                     2.29            1.38
 
 En base a los resultados obtenidos de los esfuerzos de las estructuras, podemos observar

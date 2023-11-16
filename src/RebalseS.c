@@ -67,8 +67,13 @@ int RS_baja(RebalseS *rs, Envio *envio, Costos_estructura *costos) {
 
     if (RS_localizar(rs, envio->codigo_envio, &elemento, &elemento_padre,&valor_hash, &celdas_consultadas)
         == LOCALIZACION_EXITOSA) {
-            *elemento_padre = elemento->siguiente;
-            free(elemento); // se libera la memoria
+
+            // confirmacion de baja
+            if (Envio_sonIguales(envio, elemento)) {
+                *elemento_padre = elemento->siguiente;
+                free(elemento); // se libera la memoria
+            }
+            else return BAJA_CANCELADA;
 
             // se guarda el costo
             (costos->Baja.cantidad)++;
@@ -116,7 +121,7 @@ int RS_mostrarLista(RebalseS *rs) {
         if (cursor == NULL) printf("\tVacio\n\n");
         else {
             while (cursor != NULL) {
-                Envio_imprimir(cursor->envio);
+                Envio_imprimir(&(cursor->envio));
                 printf("\t|\n\tv\n");
                 cursor = cursor->siguiente;
                 contador++;

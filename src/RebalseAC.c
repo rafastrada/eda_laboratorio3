@@ -40,12 +40,14 @@ int RAC_localizar(RebalseAC *rac, char codigo_envio[], int *posicion, int *celda
 
     // se devuelve la posicion por parametro
     // (la variable contiene el INDICE correspondiente del elemento en el arreglo)
-    if (primer_libre > -1) *posicion = primer_libre;
-    else *posicion = ubicacion;
+    *posicion = ubicacion;
 
-    if (strcmpi(rac->arreglo[ubicacion].codigo_envio, codigo_envio) == 0) return LOCALIZACION_EXITOSA;
+    if (strcmpi(rac->arreglo[ubicacion].codigo_envio, codigo_envio) == 0) {
+        return LOCALIZACION_EXITOSA;
+    }
     else {
-        if (contador == RAC_M) return LOCALIZACION_ERROR_IMPOSIBLE_LOCALIZAR;
+        if (primer_libre > -1) *posicion = primer_libre;
+        if (contador == RAC_M && primer_libre < 0) return LOCALIZACION_ERROR_IMPOSIBLE_LOCALIZAR;
         else return LOCALIZACION_ERROR_NO_EXISTE;
     }
 }
@@ -148,7 +150,7 @@ void RAC_mostrarLista(RebalseAC *rac) {
             if (strcmpi(rac->arreglo[i].codigo_envio, "LIBRE") == 0){
                 printf("CELDA LIBRE\n\n");
             }else{
-                Envio_imprimir(rac->arreglo[i]);
+                Envio_imprimir(&(rac->arreglo[i]));
                 }
             }
         // muestra de a 5 elementos en la lista
